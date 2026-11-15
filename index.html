@@ -1,0 +1,535 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a7f36">
+  <meta name="description" content="Tu entrenador personal de fútbol">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>AI FOOTBALL COACH V3</title>
+  <link rel="manifest" href="./manifest.json">
+
+  <style>
+    :root {
+      --fondo:#101810;
+      --panel:#19251c;
+      --panel2:#223127;
+      --verde:#19c45a;
+      --texto:#f2f7f2;
+      --suave:#a9b9ac;
+      --borde:#344638;
+      --rojo:#ff7777;
+    }
+    * {box-sizing:border-box}
+    body {
+      margin:0;
+      background:var(--fondo);
+      color:var(--texto);
+      font-family:Arial,sans-serif;
+    }
+    header {
+      padding:20px 16px;
+      background:linear-gradient(135deg,#075522,#102b19);
+      border-bottom:1px solid var(--borde);
+    }
+    header h1 {font-size:22px;margin:0 0 6px}
+    header p {margin:0;color:#c6e4ce;font-size:13px}
+    .contenedor {max-width:850px;margin:auto;padding:15px}
+    .perfil,.tarjeta {
+      background:var(--panel);
+      border:1px solid var(--borde);
+      border-radius:15px;
+      padding:15px;
+      margin-bottom:13px;
+    }
+    .perfil {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+    .dato small {color:var(--suave);display:block;margin-bottom:4px}
+    .dato strong {font-size:14px}
+    nav {
+      display:flex;
+      overflow-x:auto;
+      gap:7px;
+      padding:12px 10px;
+      position:sticky;
+      top:0;
+      z-index:5;
+      background:var(--fondo);
+    }
+    nav button {
+      flex:0 0 auto;
+      background:var(--panel2);
+      color:var(--texto);
+      border:1px solid var(--borde);
+      border-radius:20px;
+      padding:11px 14px;
+      font-weight:bold;
+    }
+    nav button.activo {background:var(--verde);color:#071b0d}
+    h2 {font-size:19px;margin-top:0}
+    h3 {font-size:16px}
+    p,li {line-height:1.5}
+    .suave {color:var(--suave);font-size:13px}
+    .verde {color:#65e891}
+    .boton {
+      background:var(--verde);
+      color:#071b0d;
+      border:0;
+      border-radius:10px;
+      padding:12px 15px;
+      font-weight:bold;
+      cursor:pointer;
+      margin-top:7px;
+    }
+    .secundario {
+      background:var(--panel2);
+      color:var(--texto);
+      border:1px solid var(--borde);
+    }
+    input,select,textarea {
+      width:100%;
+      padding:12px;
+      margin:6px 0 12px;
+      border:1px solid var(--borde);
+      border-radius:9px;
+      background:#101a13;
+      color:white;
+      font-size:15px;
+    }
+    label {font-size:13px;color:var(--suave)}
+    .fila {display:flex;gap:8px;flex-wrap:wrap}
+    .fila>* {flex:1}
+    .oculto {display:none}
+    .dia {
+      padding:12px;
+      border-bottom:1px solid var(--borde);
+    }
+    .dia:last-child {border:0}
+    .mensaje {
+      background:var(--panel2);
+      padding:13px;
+      border-radius:12px;
+      margin:9px 0;
+      white-space:pre-wrap;
+    }
+    .alerta {
+      border-left:4px solid #e6b64d;
+      padding:12px;
+      background:#302a18;
+      border-radius:8px;
+      font-size:13px;
+    }
+    footer {
+      text-align:center;
+      color:var(--suave);
+      font-size:12px;
+      padding:20px;
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <h1>⚽ AI FOOTBALL COACH</h1>
+  <p>Tu entrenador personal de fútbol · Versión 3</p>
+</header>
+
+<nav>
+  <button class="activo" data-tab="inicio">Inicio</button>
+  <button data-tab="entrenar">Entrenar</button>
+  <button data-tab="nutricion">Nutrición</button>
+  <button data-tab="recuperacion">Recuperación</button>
+  <button data-tab="progreso">Progreso</button>
+  <button data-tab="ia">Mi IA</button>
+</nav>
+
+<main class="contenedor">
+
+<section id="inicio" class="seccion">
+  <div class="perfil">
+    <div class="dato"><small>Edad</small><strong>15 años</strong></div>
+    <div class="dato"><small>Posición principal</small><strong>Defensa</strong></div>
+    <div class="dato"><small>Pie dominante</small><strong>Derecho</strong></div>
+    <div class="dato"><small>Nivel</small><strong>Intermedio</strong></div>
+    <div class="dato"><small>Lugar de entrenamiento</small><strong>Casa</strong></div>
+    <div class="dato"><small>Partido</small><strong>Domingo · 90 min</strong></div>
+  </div>
+
+  <div class="tarjeta">
+    <h2>¡Bienvenido, futbolista!</h2>
+    <p>Tu objetivo es mejorar como defensor y desarrollar técnica, velocidad, coordinación, estabilidad y resistencia.</p>
+    <p class="verde"><strong>Constancia, inteligencia y disciplina.</strong></p>
+    <button class="boton" id="instalar" hidden>📲 Instalar aplicación</button>
+    <p id="estadoInstalacion" class="suave">La opción de instalación aparecerá aquí cuando Chrome la habilite.</p>
+  </div>
+
+  <div class="tarjeta">
+    <h2>Tu semana de entrenamiento</h2>
+    <div class="dia"><strong>Lunes:</strong> recuperación suave después del partido.</div>
+    <div class="dia"><strong>Martes:</strong> fuerza general y estabilidad.</div>
+    <div class="dia"><strong>Miércoles:</strong> técnica y control de balón.</div>
+    <div class="dia"><strong>Jueves:</strong> velocidad y coordinación.</div>
+    <div class="dia"><strong>Viernes:</strong> movilidad y técnica ligera.</div>
+    <div class="dia"><strong>Sábado:</strong> descanso y preparación.</div>
+    <div class="dia"><strong>Domingo:</strong> partido de fútbol.</div>
+  </div>
+
+  <div class="alerta">
+    Entrena con buena técnica y sin excederte. Si tienes dolor, mareo o te encuentras enfermo, detén el entrenamiento y avisa a un adulto.
+  </div>
+</section>
+
+<section id="entrenar" class="seccion oculto">
+  <div class="tarjeta">
+    <h2>Plan de entrenamiento</h2>
+    <h3>Martes · Fuerza y estabilidad</h3>
+    <ul>
+      <li>Calentamiento suave: 8 minutos.</li>
+      <li>Sentadillas controladas: 2 series de 10.</li>
+      <li>Puente de glúteos: 2 series de 12.</li>
+      <li>Elevaciones de talones: 2 series de 12.</li>
+      <li>Plancha: 2 repeticiones de 15 a 20 segundos.</li>
+    </ul>
+    <h3>Miércoles · Técnica</h3>
+    <ul>
+      <li>Conducción de balón: 5 minutos.</li>
+      <li>Pases contra una pared: 3 series de 10.</li>
+      <li>Control orientado: 3 series de 8.</li>
+      <li>Conducción con ambos pies: 5 minutos.</li>
+    </ul>
+    <h3>Jueves · Velocidad y coordinación</h3>
+    <ul>
+      <li>Calentamiento: 8 minutos.</li>
+      <li>Desplazamientos laterales controlados: 3 series cortas.</li>
+      <li>Coordinación entre marcas en el suelo: 3 rondas.</li>
+      <li>Aceleraciones cortas: 4 repeticiones, descansando bien.</li>
+    </ul>
+    <h3>Viernes · Movilidad y técnica ligera</h3>
+    <ul>
+      <li>Movilidad de tobillos y cadera: 5 minutos.</li>
+      <li>Pases y controles suaves: 8 minutos.</li>
+      <li>Estiramientos cómodos: 5 minutos.</li>
+    </ul>
+    <p class="suave">Adapta las sesiones a tu energía, espacio y experiencia. No necesitas entrenar hasta el agotamiento.</p>
+  </div>
+
+  <div class="tarjeta">
+    <h2>Registrar entrenamiento</h2>
+    <label>Actividad realizada</label>
+    <input id="actividad" placeholder="Ej. Pases y control">
+    <label>Habilidad trabajada</label>
+    <select id="habilidad">
+      <option>Técnica</option>
+      <option>Fuerza</option>
+      <option>Velocidad</option>
+      <option>Coordinación</option>
+      <option>Resistencia</option>
+      <option>Defensa</option>
+      <option>Movilidad</option>
+    </select>
+    <label>¿Cómo te sentiste?</label>
+    <select id="sensacion">
+      <option>Bien</option>
+      <option>Normal</option>
+      <option>Cansado</option>
+    </select>
+    <button class="boton" id="guardar">Guardar entrenamiento</button>
+    <p id="mensajeRegistro" class="suave"></p>
+  </div>
+</section>
+
+<section id="nutricion" class="seccion oculto">
+  <div class="tarjeta">
+    <h2>Nutrición para futbolistas</h2>
+    <p>A tus 15 años necesitas suficiente alimentación para crecer, estudiar, entrenar y recuperarte.</p>
+    <h3>Desayuno</h3>
+    <p>Huevos, tortillas o pan, fruta y leche o yogur.</p>
+    <h3>Comida</h3>
+    <p>Pollo, pescado, carne, frijoles o lentejas, arroz o tortillas y verduras.</p>
+    <h3>Colación</h3>
+    <p>Fruta, yogur, sándwich o un puñado de nueces.</p>
+    <h3>Cena</h3>
+    <p>Quesadillas, huevo, frijoles, verduras o alguna comida completa que tengas disponible.</p>
+  </div>
+  <div class="tarjeta">
+    <h2>Antes y después del partido</h2>
+    <ul>
+      <li>Antes: come algo conocido que te dé energía y que toleres bien.</li>
+      <li>Durante: bebe agua en los descansos y cuando sea posible.</li>
+      <li>Después: combina alimentos con carbohidratos y proteínas.</li>
+      <li>Mantén una hidratación regular durante el día.</li>
+    </ul>
+    <p class="suave">No necesitas saltarte comidas ni seguir dietas restrictivas. Si tienes dudas sobre tu alimentación, consulta con un profesional de salud y un adulto de confianza.</p>
+  </div>
+</section>
+
+<section id="recuperacion" class="seccion oculto">
+  <div class="tarjeta">
+    <h2>Recuperación física</h2>
+    <ul>
+      <li>Procura dormir entre 8 y 10 horas.</li>
+      <li>Come suficiente y de forma variada.</li>
+      <li>Hidrátate durante el día.</li>
+      <li>Deja tiempo para descansar entre sesiones.</li>
+      <li>Haz movilidad suave cuando te resulte cómoda.</li>
+    </ul>
+  </div>
+  <div class="tarjeta">
+    <h2>¿Cómo te encuentras hoy?</h2>
+    <label>Nivel de energía</label>
+    <select id="energia">
+      <option value="alta">Tengo buena energía</option>
+      <option value="media">Tengo energía normal</option>
+      <option value="baja">Estoy muy cansado</option>
+    </select>
+    <label>¿Tienes alguna molestia o dolor?</label>
+    <select id="dolor">
+      <option value="no">No</option>
+      <option value="si">Sí</option>
+    </select>
+    <button class="boton" id="evaluar">Evaluar recuperación</button>
+    <div id="resultadoRecuperacion" class="mensaje">Tu evaluación aparecerá aquí.</div>
+  </div>
+</section>
+
+<section id="progreso" class="seccion oculto">
+  <div class="tarjeta">
+    <h2>Tu progreso</h2>
+    <p>Entrenamientos registrados: <strong id="total">0</strong></p>
+    <p>Habilidades trabajadas: <strong id="totalHabilidades">0</strong></p>
+    <button class="boton secundario" id="actualizar">Actualizar progreso</button>
+  </div>
+  <div class="tarjeta">
+    <h2>Historial</h2>
+    <div id="historial">Todavía no hay entrenamientos registrados.</div>
+  </div>
+</section>
+
+<section id="ia" class="seccion oculto">
+  <div class="tarjeta">
+    <h2>🤖 Mi asistente deportivo</h2>
+    <p class="suave">Haz preguntas sobre entrenamiento, defensa, técnica, alimentación o recuperación.</p>
+    <div class="fila">
+      <button class="boton secundario pregunta" data-q="¿Cómo puedo mejorar como defensa?">Defensa</button>
+      <button class="boton secundario pregunta" data-q="Dame consejos para mejorar mi técnica.">Técnica</button>
+      <button class="boton secundario pregunta" data-q="¿Cómo puedo mejorar mi velocidad?">Velocidad</button>
+      <button class="boton secundario pregunta" data-q="¿Cómo debo recuperarme después de un partido?">Recuperación</button>
+    </div>
+    <label>Escribe tu pregunta</label>
+    <textarea id="pregunta" rows="3" placeholder="Ej. ¿Cómo mejorar mi posicionamiento?"></textarea>
+    <button class="boton" id="consultar">Consultar asistente</button>
+    <div id="respuesta" class="mensaje">Estoy listo para ayudarte a mejorar como futbolista.</div>
+    <button class="boton secundario" id="chatgpt">Consultar ChatGPT</button>
+    <p class="suave">Este asistente utiliza respuestas programadas en esta versión. El botón de ChatGPT abre una conversación externa; esta aplicación todavía no está conectada a un modelo de IA mediante API.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>AI FOOTBALL COACH V3 · Entrena con inteligencia ⚽</footer>
+
+<script>
+  const secciones = document.querySelectorAll(".seccion");
+  const botones = document.querySelectorAll("nav button");
+
+  botones.forEach(boton => {
+    boton.addEventListener("click", () => {
+      secciones.forEach(s => s.classList.add("oculto"));
+      botones.forEach(b => b.classList.remove("activo"));
+      document.getElementById(boton.dataset.tab).classList.remove("oculto");
+      boton.classList.add("activo");
+      if (boton.dataset.tab === "progreso") actualizarProgreso();
+    });
+  });
+
+  const CLAVE = "afc_registros";
+
+  function obtenerRegistros() {
+    try {
+      return JSON.parse(localStorage.getItem(CLAVE)) || [];
+    } catch {
+      return [];
+    }
+  }
+
+  function guardarRegistros(datos) {
+    localStorage.setItem(CLAVE, JSON.stringify(datos));
+  }
+
+  document.getElementById("guardar").addEventListener("click", () => {
+    const actividad = document.getElementById("actividad").value.trim();
+    if (!actividad) {
+      document.getElementById("mensajeRegistro").textContent =
+        "Escribe la actividad que realizaste.";
+      return;
+    }
+
+    const registros = obtenerRegistros();
+    registros.unshift({
+      actividad,
+      habilidad: document.getElementById("habilidad").value,
+      sensacion: document.getElementById("sensacion").value,
+      fecha: new Date().toLocaleDateString("es-MX")
+    });
+
+    guardarRegistros(registros);
+    document.getElementById("actividad").value = "";
+    document.getElementById("mensajeRegistro").textContent =
+      "¡Entrenamiento guardado correctamente!";
+    actualizarProgreso();
+  });
+
+  function escapar(texto) {
+    return String(texto).replace(/[&<>"']/g, caracter => ({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;",
+      '"':"&quot;", "'":"&#39;"
+    })[caracter]);
+  }
+
+  function actualizarProgreso() {
+    const registros = obtenerRegistros();
+    document.getElementById("total").textContent = registros.length;
+    document.getElementById("totalHabilidades").textContent =
+      new Set(registros.map(r => r.habilidad)).size;
+
+    const historial = document.getElementById("historial");
+    if (!registros.length) {
+      historial.textContent = "Todavía no hay entrenamientos registrados.";
+      return;
+    }
+
+    historial.innerHTML = registros.map(r =>
+      `<div class="dia">
+        <strong>${escapar(r.actividad)}</strong>
+        <div class="suave">${escapar(r.fecha)} · ${escapar(r.habilidad)} · ${escapar(r.sensacion)}</div>
+      </div>`
+    ).join("");
+  }
+
+  document.getElementById("actualizar").addEventListener("click", actualizarProgreso);
+
+  document.getElementById("evaluar").addEventListener("click", () => {
+    const energia = document.getElementById("energia").value;
+    const dolor = document.getElementById("dolor").value;
+    const resultado = document.getElementById("resultadoRecuperacion");
+
+    if (dolor === "si") {
+      resultado.textContent =
+        "No entrenes sobre una molestia o dolor. Cuéntaselo a un adulto de confianza y busca orientación profesional.";
+    } else if (energia === "baja") {
+      resultado.textContent =
+        "Hoy prioriza descansar, comer suficiente e hidratarte. No necesitas forzar una sesión.";
+    } else if (energia === "media") {
+      resultado.textContent =
+        "Puedes valorar una actividad suave y ajustar la intensidad según cómo te sientas.";
+    } else {
+      resultado.textContent =
+        "Parece que tienes buena energía. Sigue tu plan sin excederte y mantén tus descansos.";
+    }
+  });
+
+  function responder(pregunta) {
+    const p = pregunta.toLowerCase();
+
+    if (/dolor|lesion|lesión|mareo|enfermo/.test(p)) {
+      return "Si tienes dolor, mareo o te encuentras enfermo, no fuerces el entrenamiento. Avisa a un adulto y busca orientación profesional si es necesario.";
+    }
+    if (/cansad|agotad/.test(p)) {
+      return "Escucha a tu cuerpo. Prioriza el descanso, la hidratación y una alimentación suficiente. No necesitas entrenar agotado.";
+    }
+    if (/defensa|defensor|posicionamiento|marcaje/.test(p)) {
+      return "Para mejorar como defensa trabaja el posicionamiento, la comunicación, la orientación corporal, la anticipación y los pases seguros. Observa el juego y evita lanzarte a cada balón.";
+    }
+    if (/fuerza|estabilidad/.test(p)) {
+      return "Practica sentadillas controladas, puentes de glúteos, elevaciones de talones y ejercicios de equilibrio. Cuida la técnica y descansa entre series.";
+    }
+    if (/velocidad|rapidez/.test(p)) {
+      return "Mejora tu velocidad con calentamiento, coordinación, desplazamientos cortos y aceleraciones breves con descansos amplios. Mantén una técnica correcta.";
+    }
+    if (/tecnica|técnica|balon|balón|pase|control/.test(p)) {
+      return "Practica controles orientados, pases con ambos pies, conducción y recepción. Empieza despacio y aumenta la dificultad gradualmente.";
+    }
+    if (/comida|aliment|nutric|comer/.test(p)) {
+      return "Come de forma variada y suficiente: incluye carbohidratos, proteínas, frutas, verduras y fuentes de grasas saludables. Tu cuerpo necesita energía para crecer y jugar.";
+    }
+    if (/recuper|descanso|dormir|sueño/.test(p)) {
+      return "Procura dormir entre 8 y 10 horas, hidratarte, comer suficiente y dejar tiempo de recuperación entre entrenamientos.";
+    }
+    if (/progreso|mejorar/.test(p)) {
+      return "Registra tus entrenamientos y observa qué habilidades practicas. La constancia, la técnica y el descanso ayudan a mejorar.";
+    }
+
+    return "Puedo orientarte sobre defensa, fuerza, velocidad, técnica, alimentación, recuperación y progreso. Escribe una pregunta más concreta.";
+  }
+
+  document.getElementById("consultar").addEventListener("click", () => {
+    const pregunta = document.getElementById("pregunta").value.trim();
+    if (!pregunta) {
+      document.getElementById("respuesta").textContent = "Escribe una pregunta primero.";
+      return;
+    }
+    document.getElementById("respuesta").textContent = responder(pregunta);
+  });
+
+  document.querySelectorAll(".pregunta").forEach(b => {
+    b.addEventListener("click", () => {
+      document.getElementById("pregunta").value = b.dataset.q;
+      document.getElementById("respuesta").textContent = responder(b.dataset.q);
+    });
+  });
+
+  document.getElementById("chatgpt").addEventListener("click", () => {
+    window.open("https://chatgpt.com/", "_blank", "noopener");
+  });
+
+  // Instalación PWA en navegadores compatibles
+  let eventoInstalacion = null;
+  const botonInstalar = document.getElementById("instalar");
+  const estadoInstalacion = document.getElementById("estadoInstalacion");
+
+  window.addEventListener("beforeinstallprompt", evento => {
+    evento.preventDefault();
+    eventoInstalacion = evento;
+    botonInstalar.hidden = false;
+    estadoInstalacion.textContent = "Tu aplicación está lista para instalarse.";
+  });
+
+  botonInstalar.addEventListener("click", async () => {
+    if (!eventoInstalacion) {
+      estadoInstalacion.textContent =
+        "Chrome todavía no ofrece la instalación. Revisa el menú de Chrome.";
+      return;
+    }
+    eventoInstalacion.prompt();
+    const resultado = await eventoInstalacion.userChoice;
+    estadoInstalacion.textContent =
+      resultado.outcome === "accepted"
+        ? "Instalación aceptada."
+        : "Instalación cancelada. Puedes intentarlo después.";
+    eventoInstalacion = null;
+    botonInstalar.hidden = true;
+  });
+
+  window.addEventListener("appinstalled", () => {
+    estadoInstalacion.textContent = "¡AI FOOTBALL COACH quedó instalada!";
+    botonInstalar.hidden = true;
+  });
+
+  // Registrar el servicio de funcionamiento sin conexión
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js")
+        .then(() => console.log("Servicio PWA registrado"))
+        .catch(error => console.error("Error PWA:", error));
+    });
+  }
+
+  actualizarProgreso();
+</script>
+</body>
+</html>
