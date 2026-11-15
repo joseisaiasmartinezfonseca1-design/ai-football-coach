@@ -1,1 +1,12 @@
 
+{
+  "name": "AI Football Coach",
+  "short_name": "Football Coach",
+  "description": "Tu entrenador personal de fútbol",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#101810",
+  "theme_color": "#0a7f36"
+}
