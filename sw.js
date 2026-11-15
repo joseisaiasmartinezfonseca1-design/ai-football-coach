@@ -1,3 +1,4 @@
+
 const CACHE_NAME = "ai-football-coach-v1";
 const ARCHIVOS = [
   "./",
@@ -44,4 +45,3 @@ self.addEventListener("fetch", (event) => {
       .catch(() => caches.match(event.request))
   );
 });
-      
